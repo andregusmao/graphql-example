@@ -24,6 +24,51 @@ let userType = new graphql.GraphQLObjectType({
 })
 
 let schema = new graphql.GraphQLSchema({
+    mutation: new graphql.GraphQLObjectType({
+        name: 'Mutation',
+        fields: {
+            newUser: {
+                type: userType,
+                args: {
+                    user: userType
+                },
+                resolve: (_, args) => {
+                    return {
+                        id: args.id,
+                        name: args.name
+                    };
+                }
+            },
+            updateUser: {
+                type: userType,
+                args: {
+                    id: {
+                        type: graphql.GraphQLInt
+                    }
+                },
+                resolve: (_, args) => {
+                    let response = users.find(function (user) {
+                        return (user.id === args.id)
+                    })
+                    return response
+                }
+            },
+            deleteUser: {
+                type: userType,
+                args: {
+                    id: {
+                        type: graphql.GraphQLInt
+                    }
+                },
+                resolve: (_, args) => {
+                    let response = users.find(function (user) {
+                        return (user.id === args.id)
+                    })
+                    return response
+                }
+            }
+        }
+    }),
     query: new graphql.GraphQLObjectType({
         name: 'Query',
         fields: {
@@ -39,6 +84,12 @@ let schema = new graphql.GraphQLSchema({
                         return (user.id === args.id)
                     })
                     return response
+                }
+            },
+            users: {
+                type: new graphql.GraphQLList(userType),
+                resolve: function (_, args) {
+                    return users
                 }
             }
         }
